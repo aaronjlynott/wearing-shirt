@@ -1,0 +1,41 @@
+import sys
+from os.path import splitext
+from PIL import Image, ImageOps
+
+def main():
+    command_arg()
+    try:
+        image = Image.open(sys.argv[1])
+    except FileNotFoundError:
+        sys.exit('Cannot open file')
+
+    shirt = Image.open('shirt.png')
+    size = shirt.size
+    muppet = ImageOps.fit(image, size)
+    muppet.paste(shirt, shirt)
+    muppet.save(sys.argv[2])
+
+
+def command_arg():
+    if len(sys.argv) < 3:
+        sys.exit('Not enough arguments!')
+    if len(sys.argv) > 3:
+        sys.exit('Too many arguments!')
+
+    end_file1 = splitext(sys.argv[1])
+    end_file2 = splitext(sys.argv[2])
+    if check_end_file(end_file1[1]) == False:
+        sys.exit('Incorrect input')
+    if check_end_file(end_file2[1]) == False:
+        sys.exit('Incorrect output')
+
+    if end_file1[1].lower() != end_file2[1].lower():
+        sys.exit('Input and output have different extensions')
+
+def check_end_file(file):
+    if file in ['.jpg', '.jpeg', '.png']:
+        return True
+    return False
+
+if __name__ == '__main__':
+    main()
